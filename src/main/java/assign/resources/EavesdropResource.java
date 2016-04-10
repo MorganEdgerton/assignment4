@@ -61,7 +61,7 @@ public class EavesdropResource {
 	
 	EavesdropService eavesdropService;
 	
-	CourseStudentService courseStudentService;
+	//CourseStudentService courseStudentService;
 	ProjectService projectService;
 	
 	Array allIDs;
