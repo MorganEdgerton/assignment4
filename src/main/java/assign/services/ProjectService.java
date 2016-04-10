@@ -15,8 +15,6 @@ public interface ProjectService {
 	
 	public Boolean deleteProjectDb(int projId) throws Exception;
 	
-	public java.sql.Array getIDs() throws Exception;
-	
 	public Project updateProjectDb(Project p) throws Exception;
 	
 }

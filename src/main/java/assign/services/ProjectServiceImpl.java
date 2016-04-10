@@ -61,7 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
 		int affectedRows = stmt.executeUpdate();
 
         if (affectedRows == 0) {
-            throw new SQLException("Creating project failed, no rows affected.");
+        	throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         
         ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -70,8 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
         	System.out.println("projectId: " + p.getId());
         }
         else {
-        	System.out.println("IN HEAH");
-            throw new SQLException("Creating project failed, no ID obtained.");
+        	throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         
         // Close the connection
@@ -103,22 +102,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return p;
 	}
 
-//	public Project getProject(int projId) throws Exception {
-//		String query = "select * from courses where course_id=" + courseId;
-//		Connection conn = ds.getConnection();
-//		PreparedStatement s = conn.prepareStatement(query);
-//		ResultSet r = s.executeQuery();
-//		
-//		if (!r.next()) {
-//			return null;
-//		}
-//		
-//		NewCourse c = new NewCourse();
-//		c.setCourseNum(r.getString("course_num"));
-//		c.setName(r.getString("name"));
-//		c.setCourseId(r.getInt("course_id"));
-//		return c;
-//	}
 
     public Project getProject_correct(int projId) throws Exception {
     	System.out.println("GETTING PROJECT");
@@ -152,33 +135,12 @@ public class ProjectServiceImpl implements ProjectService {
     	
     	int r = s.executeUpdate();
     	System.out.println("r= " + r);
-    	
+ 
     	if(r==0){
     		return false;
     	}
     	return true;
     	
-    }
-    
-       
-    
-    public Array getIDs() throws SQLException{
-    	Array allIDs;
-    	String query = "select project_id from projects1";
-    	Connection conn = ds.getConnection();
-    	PreparedStatement s = conn.prepareStatement(query);
-
-    	ResultSet r = s.executeQuery();
-    	 	
-    	if (!r.next()) {
-    		System.out.println("NULL RESULTSET");
-    	    return null;
-    	}
-    	
-    	//put ids into allIDs
-    	allIDs = r.getArray("project_id");
-    	System.out.println("allIDs: " + allIDs);
-    	return allIDs;
     }
     
     
