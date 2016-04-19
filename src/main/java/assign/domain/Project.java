@@ -1,56 +1,71 @@
 package assign.domain;
 
-import java.util.List;
+import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElement;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
 
-
-@XmlRootElement(name = "project")
-@XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table( name = "projects" )
 public class Project {
-	@XmlElement
-	private String name;
+	
+	private Long id;
+    private String projName;
+    private String projDescription;
+    private Set<Meeting> meetings;
 
-	@XmlElement
-	private String description;
-	
-	int projId;
-		
-	public void setId(int id){
-		this.projId = id;
-	}
-	
-	public int getId(){
-		return this.projId;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-//	public List<String> getLink() {
-//        return link;
-//    }
-// 
-//    public void setLink(List<String> link) {
-//        this.link = link;
-//    }
-    
-    public void setDescription(String desc){
-    	this.description = desc;
+    public Project() {
+    	// this form used by Hibernate
     }
     
-    public String getDescription(){
-    	return this.description;
+    public Project(String projName) {
+    	this.projName = projName;
     }
     
+    @Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
+    public Long getId() {
+		return id;
+    }
+
+    private void setId(Long id) {
+		this.id = id;
+    }
     
+    @Column(name="project")
+    public String getProjName() {
+		return projName;
+    }
+
+    public void setProjName(String projName) {
+		this.projName = projName;
+    }
+    
+    @Column(name="project")
+    public String getProjDescription() {
+		return projName;
+    }
+
+    public void setProjDescription(String projDescription) {
+		this.projDescription = projDescription;
+    }
+    
+    @OneToMany(mappedBy="project")
+    @Cascade({CascadeType.DELETE})
+    public Set<Meeting> getMeetings() {
+    	return this.meetings;
+    }
+    
+    public void setMeetings(Set<Meeting> meetings) {
+    	this.meetings = meetings;
+    }
 }

@@ -45,8 +45,6 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 import assign.domain.NotFound;
 import assign.domain.Project;
-import assign.domain.Projects;
-
 import assign.services.EavesdropService;
 import assign.services.ProjectService;
 import assign.services.ProjectServiceImpl;
