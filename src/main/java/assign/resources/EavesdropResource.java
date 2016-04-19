@@ -43,15 +43,12 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 //import com.restfully.shop.domain.*;  //?? original= com.restufully.shop.domain.Customer
 
-import assign.domain.Course;
-import assign.domain.Courses;
 import assign.domain.NewCourse;
 import assign.domain.NewCourses;
 import assign.domain.NotFound;
 import assign.domain.Project;
 import assign.domain.Projects;
-import assign.services.CourseStudentService;
-import assign.services.CourseStudentServiceImpl;
+
 import assign.services.EavesdropService;
 import assign.services.ProjectService;
 import assign.services.ProjectServiceImpl;
