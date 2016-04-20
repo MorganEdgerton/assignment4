@@ -99,7 +99,7 @@ public class EavesdropResource {
 		System.out.println("tryna POST");
 		
 		//input validation
-		if(p.getName().equals("") || p.getDescription().equals("")){
+		if(p.getProjName().equals("") || p.getProjDescription().equals("")){
 			System.out.println("yeh yeh!");
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
@@ -135,7 +135,7 @@ public class EavesdropResource {
 	    }
 	    else{	    
 		
-	    	System.out.println("p ID " +p.getId() + " p NAME " + p.getName() + " p DESCRIPTION " + p.getDescription());
+	    	System.out.println("p ID " +p.getId() + " p NAME " + p.getProjName() + " p DESCRIPTION " + p.getProjDescription());
 	    	final Project outputProject = p; //hack
 	
 	    	return new StreamingOutput() {
@@ -168,7 +168,7 @@ public class EavesdropResource {
 		  System.out.println("tryna PUT");
 		  
 		  //input validation
-		  if(update.getName().equals("") || update.getDescription().equals("")){
+		  if(update.getProjName().equals("") || update.getProjDescription().equals("")){
 			  throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		  }
 		  
@@ -176,9 +176,9 @@ public class EavesdropResource {
 		  Project current = projectService.getProject_correct(projId);
 	    
 		  if (current == null) throw new WebApplicationException(Response.Status.NO_CONTENT);
-		  System.out.println("current= " + current.getName() + " DESCRIPTION: " + current.getDescription());
+		  System.out.println("current= " + current.getProjName() + " DESCRIPTION: " + current.getProjDescription());
 
-		  current.setDescription(update.getDescription());
+		  current.setProjDescription(update.getProjDescription());
 		  projectService.updateProjectDb(current);
 		  
 		  return Response.ok().build(); 
@@ -246,8 +246,8 @@ public class EavesdropResource {
 	  protected void outputProject(OutputStream os, Project proj) throws IOException { //TODO: implement getId() and getProj() and uncomment
 	      PrintStream writer = new PrintStream(os);
 	      writer.println("<project id=\"" + proj.getId() + "\">");
-	      writer.println("   <name>" + proj.getName() + "</name>");
-	      writer.println("   <description>" + proj.getDescription() + "</description>");
+	      writer.println("   <name>" + proj.getProjName() + "</name>");
+	      writer.println("   <description>" + proj.getProjDescription() + "</description>");
 	      writer.println("</project>");
 	   }
 	  

@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table( name = "projects" )
 public class Project {
 	
-	private Long id;
+	private int id;
     private String projName;
     private String projDescription;
     private Set<Meeting> meetings;
@@ -33,11 +33,11 @@ public class Project {
     @Id
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
-    public Long getId() {
+    public int getId() {
 		return id;
     }
 
-    private void setId(Long id) {
+    private void setId(int id) { //TODO: Does int work instead of Long??
 		this.id = id;
     }
     

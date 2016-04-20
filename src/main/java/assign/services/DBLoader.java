@@ -11,8 +11,8 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
-import assign.domain.Assignment;
-import assign.domain.UTCourse;
+import assign.domain.Meeting;
+import assign.domain.Project;
 
 import java.util.logging.*;
 
@@ -34,13 +34,13 @@ public class DBLoader {
 		logger.info("Inside loadData.");
 	}
 	
-	public Long addMeeting(String title) throws Exception {
+	public Long addMeeting(String name, int year) throws Exception {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		Long meetingId = null;
 		try {
 			tx = session.beginTransaction();
-			Meeting newMeeting = new Meeting( title, new Date(), new Long(1)); 
+			Meeting newMeeting = new Meeting(name, year, new Long(1)); 
 			session.save(newMeeting);
 		    meetingId = newMeeting.getId();
 		    tx.commit();
@@ -143,24 +143,24 @@ public class DBLoader {
 //		}
 //	}
 //	
-//	public UTCourse getCourse(String courseName) throws Exception {
-//		Session session = sessionFactory.openSession();
-//		
-//		session.beginTransaction();
-//		
-//		Criteria criteria = session.createCriteria(UTCourse.class).
-//        		add(Restrictions.eq("courseName", courseName));
-//		
-//		List<UTCourse> courses = criteria.list();
-//		
-//		if (courses.size() > 0) {
-//			session.close();
-//			return courses.get(0);	
-//		} else {
-//			session.close();
-//			return null;
-//		}
-//	}
+	public Project getProject(String projName) throws Exception {
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		Criteria criteria = session.createCriteria(Project.class).
+        		add(Restrictions.eq("projName", projName));
+		
+		List<Project> projects = criteria.list();
+		
+		if (projects.size() > 0) {
+			session.close();
+			return projects.get(0);	
+		} else {
+			session.close();
+			return null;
+		}
+	}
 //	
 //	public void deleteAssignment(String title) throws Exception {
 //		
@@ -203,4 +203,4 @@ public class DBLoader {
 //		
 //		return assignments.get(0);		
 //	}
-//}
+}
