@@ -47,20 +47,13 @@ import assign.domain.Meeting;
 //import com.restfully.shop.domain.*;  //?? original= com.restufully.shop.domain.Customer
 
 import assign.domain.Project;
-//import assign.services.EavesdropService;
-//import assign.services.ProjectService;
-//import assign.services.ProjectServiceImpl;
 import assign.services.DBLoader;
 
 
 @Path("/projects")
 public class EavesdropResource {
 	
-	//EavesdropService eavesdropService;
 	DBLoader dbLoader;
-	
-	//CourseStudentService courseStudentService;
-	//ProjectService projectService;
 	
 	Array allIDs;
 	
@@ -136,21 +129,25 @@ public class EavesdropResource {
 	public Response createMeeting(@PathParam("projectId") long projId, Meeting m) {
 		System.out.println("tryna POST a meeting");
 		
+		System.out.println(m.getName() + " " + m.getYear());
 		//input validation
-		if(m.getName().equals("") || !(m.getYear()== -1)  ){
+		if(m.getName().equals("") || (m.getYear()== -1)  ){
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 		
 		
 	    try {
 	    	Project p = dbLoader.getProject(projId);
-	    	m.setProject(p);
-			//dbLoader.addMeeting(m); //TODO: write addMeeting & add projectID param
+	    	if(p != null){
+	    		m.setProject(p);
+	    		dbLoader.addMeetingsToProject(m);
+	    	}else{
+	    		throw new WebApplicationException(Response.Status.BAD_REQUEST);
+	    	}
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 
-	    System.out.println("I died right at the end");
 	    return Response.created(URI.create(BASE_URI + "/projects/" + m.getId())).build();
 
 	}
@@ -209,28 +206,30 @@ public class EavesdropResource {
 		
 	}
 	
-//	@PUT
-//	@Path("/{projectId}")
-//	@Consumes("application/xml")
-//	   public Response updateProject(@PathParam("projectId") int projId, Project update) throws Exception {
-//		  System.out.println("tryna PUT");
-//		  
-//		  //input validation
-//		  if(update.getProjName().equals("") || update.getProjDescription().equals("")){
-//			  throw new WebApplicationException(Response.Status.BAD_REQUEST);
-//		  }
-//		  
-//		  update.setId(projId);  
-//		  Project current = projectService.getProject_correct(projId);
-//	    
-//		  if (current == null) throw new WebApplicationException(Response.Status.NO_CONTENT);
-//		  System.out.println("current= " + current.getProjName() + " DESCRIPTION: " + current.getProjDescription());
-//
+	@PUT
+	@Path("/{projectId}/meetings/{meetingId}")
+	@Consumes("application/xml")
+	   public Response updateMeeting(@PathParam("projectId") Long projId, @PathParam("meetingId") Long meetingId, Meeting update) throws Exception {
+		  System.out.println("tryna PUT a Meeting");
+		  //TODO: get meeting ID and give ID
+		  //input validation
+		  if(update.getName().equals("") || (update.getYear() == -1) ){
+			  throw new WebApplicationException(Response.Status.BAD_REQUEST);
+		  }
+		  
+		  Project p = dbLoader.getProject(projId);
+		  Meeting current =  dbLoader.getMeeting(meetingId);
+		  if (p == null || current == null) throw new WebApplicationException(Response.Status.NO_CONTENT);
+
+		  update.setProject(p);
+		  
+	      dbLoader.updateMeeting(current, update);		  
+
 //		  current.setProjDescription(update.getProjDescription());
 //		  projectService.updateProjectDb(current);
 //		  
-//		  return Response.ok().build(); 
-//	 }
+		  return Response.ok().build(); 
+	 }
 	
 	
 //	@GET

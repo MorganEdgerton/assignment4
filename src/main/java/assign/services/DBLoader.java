@@ -108,20 +108,12 @@ public class DBLoader {
 //		return meetingId;
 //	}
 //	
-	public Long addMeetingsToProject(List<Meeting> meetings, String projName) throws Exception { //TODO: fix meeting param
+	public Long addMeetingsToProject(Meeting m) throws Exception { //TODO: fix meeting param
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
-		Long projId = null;
 		try {
 			tx = session.beginTransaction();
-			Project project = new Project(projName);
-			session.save(project);
-			projId = project.getId();
-			for(Meeting m : meetings) {
-				Meeting newMeeting = m; //PREV: new Meeting( m, new Date() )
-				newMeeting.setProject(project);
-				session.save(newMeeting);
-			}
+			session.save(m);
 		    tx.commit();
 		} catch (Exception e) {
 			if (tx != null) {
@@ -132,7 +124,7 @@ public class DBLoader {
 		finally {
 			session.close();			
 		}
-		return projId;
+		return m.getId();
 	}
 //	
 	public List<Meeting> getMeetingsForAProject(Long projId) throws Exception { //TRY: projId to id
@@ -190,21 +182,28 @@ public class DBLoader {
 			return null;
 		}
 	}
-//	
-//	public void deleteAssignment(String title) throws Exception {
-//		
-//		Session session = sessionFactory.openSession();		
-//		session.beginTransaction();
-//		String query = "from Assignment a where a.title = :title";		
-//				
-//		Assignment a = (Assignment)session.createQuery(query).setParameter("title", title).list().get(0);
-//		
-//        session.delete(a);
-//
-//        session.getTransaction().commit();
-//        session.close();		
-//	}
-//	
+	
+	public Long updateMeeting(Meeting current, Meeting update) throws Exception {
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			session.saveOrUpdate(current);
+			current.setName(update.getName());
+			current.setYear(update.getYear());
+		    tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+				throw e;
+			}
+		}
+		finally {
+			session.close();			
+		}
+		return current.getId();
+	}
+
 	public void deleteProject(Long projId) throws Exception {
 		
 		Session session = sessionFactory.openSession();		
