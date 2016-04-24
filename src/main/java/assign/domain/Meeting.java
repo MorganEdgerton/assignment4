@@ -15,6 +15,12 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlRootElement(name = "meeting")
 @Entity
 @Table( name = "meetings" )
 public class Meeting {
@@ -22,7 +28,7 @@ public class Meeting {
 	private Long id;
 
     private String name;
-    private int year;
+    private int year = -1;
     private Project project;
     
     public Meeting() {
@@ -54,7 +60,7 @@ public class Meeting {
 		this.id = id;
     }
 
-	@Temporal(TemporalType.TIMESTAMP)
+
 	@Column(name = "MEETING_YEAR")
     public int getYear() {
 		return year;

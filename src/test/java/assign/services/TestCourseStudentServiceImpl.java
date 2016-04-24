@@ -11,13 +11,13 @@ public class TestCourseStudentServiceImpl {
 	
 	ProjectService projService = null;
 	
-	@Before
-	public void setUp() {
-		String dburl = "jdbc:mysql://localhost:3306/student_courses";
-		String dbusername = "medgerton";
-		String dbpassword = "";
-		projService = new ProjectServiceImpl(dburl, dbusername, dbpassword);
-	}
+//	@Before
+//	public void setUp() {
+//		String dburl = "jdbc:mysql://localhost:3306/student_courses";
+//		String dbusername = "medgerton";
+//		String dbpassword = "";
+//		projService = new ProjectServiceImpl(dburl, dbusername, dbpassword);
+//	}
 	
 //	@Test
 //	public void testCourseAddition() {

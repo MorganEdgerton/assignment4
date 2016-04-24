@@ -32,7 +32,7 @@
 
         <!-- Database connection settings -->
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/eavesdrop_projects</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/eavesdrop_projects?createDatabaseIfNotExist=true</property>
         <property name="connection.username">medgerton</property>
         <property name="connection.password"></property>
 
@@ -49,7 +49,7 @@
         <property name="show_sql">true</property>
 
         <!-- Drop and re-create the database schema on startup -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
                 
         <!-- Names the annotated entity class -->
         <mapping class="assign.domain.Meeting"/>

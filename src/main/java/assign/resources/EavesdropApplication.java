@@ -12,7 +12,10 @@ public class EavesdropApplication extends Application {
 	private Set<Object> singletons = new HashSet<Object>();
 	private Set<Class<?>> classes = new HashSet<Class<?>>();
 	
-	public EavesdropApplication() {		
+	
+	public EavesdropApplication() {	
+		System.out.println("Starting app");
+		
 	}
 	
 	@Override

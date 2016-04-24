@@ -23,9 +23,11 @@ public class DBLoader {
 	
 	public DBLoader() {
 		// A SessionFactory is set up once for an application
-        sessionFactory = new Configuration()
+		System.out.println("Gonna config in DBLoader");
+		sessionFactory = new Configuration()
                 .configure() // configures settings from hibernate.cfg.xml
                 .buildSessionFactory();
+        System.out.println("I configed");
         
         logger = Logger.getLogger("EavesdropReader");
 	}
@@ -56,6 +58,31 @@ public class DBLoader {
 		return meetingId;
 	}
 	
+	public Long addProject(Project p) throws Exception {
+		System.out.println("in DBLoader.addProject()");
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		Long projId = null;
+		try {
+			
+			tx = session.beginTransaction();
+			session.save(p);
+		    projId = (long) p.getId();
+		    System.out.println("Long projId = "+ projId );
+		    tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				System.out.println("here");
+				tx.rollback();
+				throw e;
+			}
+		}
+		finally {
+			session.close();			
+		}
+		return projId;
+	}
+	
 //	public Long addMeetingAndProject(String title, String projectTitle) throws Exception {
 //		Session session = sessionFactory.openSession();
 //		Transaction tx = null;
@@ -81,77 +108,79 @@ public class DBLoader {
 //		return meetingId;
 //	}
 //	
-//	public Long addAssignmentsToCourse(List<String> assignments, String courseTitle) throws Exception {
-//		Session session = sessionFactory.openSession();
-//		Transaction tx = null;
-//		Long courseId = null;
-//		try {
-//			tx = session.beginTransaction();
-//			UTCourse course = new UTCourse(courseTitle);
-//			session.save(course);
-//			courseId = course.getId();
-//			for(String a : assignments) {
-//				Assignment newAssignment = new Assignment( a, new Date() );
-//				newAssignment.setCourse(course);
-//				session.save(newAssignment);
-//			}
-//		    tx.commit();
-//		} catch (Exception e) {
-//			if (tx != null) {
-//				tx.rollback();
-//				throw e;
-//			}
-//		}
-//		finally {
-//			session.close();			
-//		}
-//		return courseId;
-//	}
+	public Long addMeetingsToProject(List<Meeting> meetings, String projName) throws Exception { //TODO: fix meeting param
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		Long projId = null;
+		try {
+			tx = session.beginTransaction();
+			Project project = new Project(projName);
+			session.save(project);
+			projId = project.getId();
+			for(Meeting m : meetings) {
+				Meeting newMeeting = m; //PREV: new Meeting( m, new Date() )
+				newMeeting.setProject(project);
+				session.save(newMeeting);
+			}
+		    tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+				throw e;
+			}
+		}
+		finally {
+			session.close();			
+		}
+		return projId;
+	}
 //	
-//	public List<Assignment> getAssignmentsForACourse(Long courseId) throws Exception {
-//		Session session = sessionFactory.openSession();		
-//		session.beginTransaction();
-//		String query = "from Assignment where course=" + courseId; // BAD PRACTICE
-//		List<Assignment> assignments = session.createQuery(query).list();		
-//		return assignments;
-//	}
+	public List<Meeting> getMeetingsForAProject(Long projId) throws Exception { //TRY: projId to id
+		Session session = sessionFactory.openSession();		
+		session.beginTransaction();
+		String query = "from Meeting where project_id=" + projId; // BAD PRACTICE
+		List<Meeting> meetings = session.createQuery(query).list();		
+		return meetings;
+	}
+	
+	public List<Object[]> getMeetingsForAProject(String projectName) throws Exception {
+		Session session = sessionFactory.openSession();		
+		session.beginTransaction();
+		String query = "from Meeting a join a.project c where c.projectName = :cname";		
+				
+		List<Object[]> meetings = session.createQuery(query).setParameter("cname", projectName).list();
+		
+		return meetings;
+	}
+	
+	public Meeting getMeeting(String name) throws Exception {
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		Criteria criteria = session.createCriteria(Meeting.class).
+        		add(Restrictions.eq("name", name));
+		
+		List<Meeting> meetings = criteria.list();
+		
+		if (meetings.size() > 0) {
+			return meetings.get(0);			
+		} else {
+			return null;
+		}
+	}
 //	
-//	public List<Object[]> getAssignmentsForACourse(String courseName) throws Exception {
-//		Session session = sessionFactory.openSession();		
-//		session.beginTransaction();
-//		String query = "from Assignment a join a.course c where c.courseName = :cname";		
-//				
-//		List<Object[]> assignments = session.createQuery(query).setParameter("cname", courseName).list();
-//		
-//		return assignments;
-//	}
-//	
-//	public Assignment getAssignment(String title) throws Exception {
-//		Session session = sessionFactory.openSession();
-//		
-//		session.beginTransaction();
-//		
-//		Criteria criteria = session.createCriteria(Assignment.class).
-//        		add(Restrictions.eq("title", title));
-//		
-//		List<Assignment> assignments = criteria.list();
-//		
-//		if (assignments.size() > 0) {
-//			return assignments.get(0);			
-//		} else {
-//			return null;
-//		}
-//	}
-//	
-	public Project getProject(String projName) throws Exception {
+	public Project getProject(Long projId) throws Exception {
+		System.out.println(" In DBLoader getProject. PROJECTID = " + projId);
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
 		
 		Criteria criteria = session.createCriteria(Project.class).
-        		add(Restrictions.eq("projName", projName));
+        		add(Restrictions.eq("id", projId));
 		
 		List<Project> projects = criteria.list();
+		System.out.println("here");
 		
 		if (projects.size() > 0) {
 			session.close();
@@ -191,16 +220,16 @@ public class DBLoader {
 //	}
 //	
 //	
-//	public Assignment getAssignment(Long assignmentId) throws Exception {
-//		Session session = sessionFactory.openSession();
-//		
-//		session.beginTransaction();
-//		
-//		Criteria criteria = session.createCriteria(Assignment.class).
-//        		add(Restrictions.eq("id", assignmentId));
-//		
-//		List<Assignment> assignments = criteria.list();
-//		
-//		return assignments.get(0);		
-//	}
+	public Meeting getMeeting(Long meetingId) throws Exception {
+		Session session = sessionFactory.openSession();
+		
+		session.beginTransaction();
+		
+		Criteria criteria = session.createCriteria(Meeting.class).
+        		add(Restrictions.eq("id", meetingId));
+		
+		List<Meeting> meetings = criteria.list();
+		
+		return meetings.get(0);		
+	}
 }
