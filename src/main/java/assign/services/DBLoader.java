@@ -36,13 +36,13 @@ public class DBLoader {
 		logger.info("Inside loadData.");
 	}
 	
-	public Long addMeeting(String name, int year) throws Exception {
+	public Long addMeeting(String name, int year) throws Exception { //get projId into meeting creation
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		Long meetingId = null;
 		try {
 			tx = session.beginTransaction();
-			Meeting newMeeting = new Meeting(name, year, new Long(1)); 
+			Meeting newMeeting = new Meeting(name, year); 
 			session.save(newMeeting);
 		    meetingId = newMeeting.getId();
 		    tx.commit();
@@ -205,19 +205,19 @@ public class DBLoader {
 //        session.close();		
 //	}
 //	
-//	public void deleteCourse(String courseName) throws Exception {
-//		
-//		Session session = sessionFactory.openSession();		
-//		session.beginTransaction();
-//		String query = "from UTCourse c where c.courseName = :courseName";		
-//				
-//		UTCourse c = (UTCourse)session.createQuery(query).setParameter("courseName", courseName).list().get(0);
-//		
-//        session.delete(c);
-//
-//        session.getTransaction().commit();
-//        session.close();		
-//	}
+	public void deleteProject(Long projId) throws Exception {
+		
+		Session session = sessionFactory.openSession();		
+		session.beginTransaction();
+		String query = "from Project c where c.id = :projId";		
+				
+		Project p = (Project)session.createQuery(query).setParameter("projId", projId).list().get(0);
+		
+        session.delete(p);
+
+        session.getTransaction().commit();
+        session.close();		
+	}
 //	
 //	
 	public Meeting getMeeting(Long meetingId) throws Exception {

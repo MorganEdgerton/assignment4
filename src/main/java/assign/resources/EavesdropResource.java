@@ -192,21 +192,22 @@ public class EavesdropResource {
 	    	};
 	    }
 	}	
-//	
-//	@DELETE
-//	@Path("/{projectId}")
-//	@Produces("application/xml")
-//	public Response deleteProject(@PathParam("projectId") String projectId) throws Exception {
-//		System.out.println("projectID "+ projectId);
-//		
-//		int projectID = Integer.parseInt(projectId);
-//		if(!projectService.deleteProjectDb(projectID)){
+
+	@DELETE
+	@Path("/{projectId}")
+	@Produces("application/xml")
+	public Response deleteProject(@PathParam("projectId") String projectId) throws Exception {
+		System.out.println("projectID "+ projectId);
+		
+		Long projectID =  (long) Integer.parseInt(projectId);
+		dbLoader.deleteProject(projectID);
+//		if(!dbLoader.deleteProject(projectID)){ //TODO: make bad return state
 //			throw new WebApplicationException(Response.Status.NOT_FOUND);
 //		}	
-//		
-//		return Response.ok().build();
-//		
-//	}
+		
+		return Response.ok().build();
+		
+	}
 	
 //	@PUT
 //	@Path("/{projectId}")
