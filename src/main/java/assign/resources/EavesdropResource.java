@@ -69,7 +69,6 @@ public class EavesdropResource {
 	
 	}
 	
-	
 	@GET
 	@Path("/helloworld")
 	@Produces("text/html")
@@ -92,63 +91,56 @@ public class EavesdropResource {
 	
 	
 	@POST
-   // @Consumes("application/xml")
 	@Consumes("application/xml")
-	public Response createProject(Project p) {
-		System.out.println("tryna POST"); //REMOVE
-		
-		if(p ==null){
-			System.out.println("p is null");
-		}else{
-			System.out.println("p is here!");
-			System.out.println(p.getName());
-			p.setMeetings(null);
-		}
+	public Response createProject(Project p) {	
+			
+		//check for 'spaces only'
+		String pName = p.getName().replaceAll("\\s","");
+		String pDescription = p.getDescription().replaceAll("\\s","");
 		
 		//input validation
-		if(p.getName().equals("") || p.getDescription().equals("")){
+		if(pName.equals("") || pDescription.equals("")){
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 
 	    try {
-	    	System.out.println("calling dbLoader.addProject"); //REMOVE
-			dbLoader.addProject(p);
+	    	p.setMeetings(null);
+	    	dbLoader.addProject(p);
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 
-	    System.out.println("I died right at the end");
 	    return Response.created(URI.create(BASE_URI + "/projects/" + p.getId())).build();
-
+	
 	}
 	
 	@POST
 	@Path("/{projectId}/meetings")
-   // @Consumes("application/xml")
 	@Consumes("application/xml")
 	public Response createMeeting(@PathParam("projectId") long projId, Meeting m) {
-		System.out.println("tryna POST a meeting");
+
+		//check for 'spaces only'
+		String mName = m.getName().replaceAll("\\s","");
+		//String mYear = m.getYear()..replaceAll("\\s","");
 		
-		System.out.println(m.getName() + " " + m.getYear());
 		//input validation
-		if(m.getName().equals("") || (m.getYear()== -1)  ){
+		if(mName.equals("") || (m.getYear()== -1)  ){
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 		
-		
 	    try {
 	    	Project p = dbLoader.getProject(projId);
-	    	if(p != null){
+	    	//if(p != null){
 	    		m.setProject(p);
 	    		dbLoader.addMeetingsToProject(m);
-	    	}else{
-	    		throw new WebApplicationException(Response.Status.BAD_REQUEST);
-	    	}
+//	    	}else{
+//	    		throw new WebApplicationException(Response.Status.BAD_REQUEST);
+//	    	}
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 
-	    return Response.created(URI.create(BASE_URI + "/projects/" + m.getId())).build();
+	    return Response.created(URI.create(BASE_URI + "/projects/" + projId + "/meetings/" + m.getId())).build();
 
 	}
 	
@@ -224,70 +216,9 @@ public class EavesdropResource {
 		  update.setProject(p);
 		  
 	      dbLoader.updateMeeting(current, update);		  
-
-//		  current.setProjDescription(update.getProjDescription());
-//		  projectService.updateProjectDb(current);
-//		  
+	  
 		  return Response.ok().build(); 
 	 }
-	
-	
-//	@GET
-//	@Path("/project")
-//	@Produces("application/xml")
-//	public StreamingOutput getProject() throws Exception {
-//		
-//		final Project heat = new Project();
-//		heat.setName("%23heat");
-//		heat.setLink(new ArrayList<String>());
-//		heat.getLink().add("l3");
-//		heat.getLink().add("l2");		
-//		
-//		//throw new WebApplicationException();
-//		
-//		final NotFound notFound = new NotFound();
-//		notFound.setError("Project non-existent-project does not exist");
-//		
-//	    return new StreamingOutput() {
-//	         public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-//	            outputCourses(outputStream, notFound);
-//	         }
-//	      };
-//	     
-//	}		
-	
-//    public Project readProject(int projId, InputStream is) {
-//        try {
-//           System.out.println("READING PROJECT");
-//           DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-//           Document doc = builder.parse(is);//not working well
-//           Element root = doc.getDocumentElement();
-//           System.out.println("doc= " + doc);
-//           Project p = new Project();
-//           System.out.println("rootname= " + root.getAttribute("id"));
-//           if (root.getAttribute("name") != null && root.getAttribute("description") != null){
-//        	   p.setId(projId);
-//        	   System.out.println("we got root stuff");
-//           }
-//                         
-//           NodeList nodes = root.getChildNodes();
-//           for (int i = 0; i < nodes.getLength(); i++) {
-//              Element element = (Element) nodes.item(i);
-//              if (element.getTagName().equals("name")) {
-//                 p.setName(element.getTextContent());
-//                 System.out.println("p.name=" + p.getName());
-//              }
-//              else if (element.getTagName().equals("description")) {
-//                 p.setDescription(element.getTextContent());
-//                 System.out.println("p.name=" + p.getName());
-//              }
-//           }
-//           return p;
-//        }=
-//        catch (Exception e) {
-//           throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-//        }
-//     }
     	
 	
 	  protected void outputProject(OutputStream os, Project proj) throws IOException { //TODO: implement getId() and getProj() and uncomment
