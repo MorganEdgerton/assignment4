@@ -163,7 +163,7 @@ public class DBLoader {
 	}
 //	
 	public Project getProject(Long projId) throws Exception {
-		System.out.println(" In DBLoader getProject. PROJECTID = " + projId);
+
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();

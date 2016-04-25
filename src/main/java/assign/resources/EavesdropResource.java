@@ -153,30 +153,14 @@ public class EavesdropResource {
 	public StreamingOutput getProject(@PathParam("projectId") Long projectId
 			) throws Exception {
 		
-		System.out.println("projectID "+ projectId);
-		
 		Project p = new Project();
 	    Long projectID = Long.valueOf(projectId).longValue();
-	    System.out.println("GET DAT PROJECT");
-	    
-	    
 	    
 	    if(( p = dbLoader.getProject(projectId))==null){
-	    	System.out.println("p is null");
 	        throw new WebApplicationException(Response.Status.NOT_FOUND);
 	    }
 	    else{	    
-		
-	    	System.out.println("p ID " +p.getId() + " p NAME " + p.getName() + " p DESCRIPTION " + p.getDescription());
-//	    	final java.util.Set<Meeting> meetings = p.getMeetings();
-//	    	if(meetings != null){
-//	    		System.out.println("Got meetings! ");
-//	    		for(Meeting m : meetings){
-//	    			System.out.println("m.getName() = " + m.getName());
-//	    		}
-//	    	}
 	    	final Project outputProject = p; //hack
-	
 	    	return new StreamingOutput() {
 	    		public void write(OutputStream outputStream) throws IOException, WebApplicationException {
 	    			outputProject(outputStream, outputProject);
