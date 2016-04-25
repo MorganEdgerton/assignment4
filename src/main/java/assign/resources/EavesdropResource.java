@@ -175,10 +175,12 @@ public class EavesdropResource {
 		System.out.println("projectID "+ projectId);
 		
 		Long projectID =  (long) Integer.parseInt(projectId);
-		dbLoader.deleteProject(projectID);
-//		if(!dbLoader.deleteProject(projectID)){ //TODO: make bad return state
-//			throw new WebApplicationException(Response.Status.NOT_FOUND);
-//		}	
+		
+		try{
+			dbLoader.deleteProject(projectID);
+		} catch (Exception e){
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}	
 		
 		return Response.ok().build();
 		
