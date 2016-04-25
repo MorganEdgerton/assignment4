@@ -28,7 +28,7 @@ public class Meeting {
 	private Long id;
 
     private String name;
-    private int year = -1;
+    private int year;
     private Project project;
     
     public Meeting() {

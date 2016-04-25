@@ -172,16 +172,16 @@ public class DBLoader {
         		add(Restrictions.eq("id", projId));
 		
 		List<Project> projects = criteria.list();
-		System.out.println("here");
 		
 		if (projects.size() > 0) {
+			System.out.println("projects.get(0) " + projects.get(0));
 			session.close();
 			return projects.get(0);	
 		} else {
 			session.close();
 			return null;
 		}
-	}
+	}  
 	
 	public Long updateMeeting(Meeting current, Meeting update) throws Exception {
 		Session session = sessionFactory.openSession();

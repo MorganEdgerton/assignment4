@@ -57,7 +57,7 @@ public class Project {
 		return id;
     }
 
-    public void setId(Long id) { //TODO: Does int work instead of Long??
+    public void setId(Long id) {
 		this.id = id;
     }
     

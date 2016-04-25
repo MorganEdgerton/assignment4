@@ -121,24 +121,27 @@ public class EavesdropResource {
 
 		//check for 'spaces only'
 		String mName = m.getName().replaceAll("\\s","");
-		//String mYear = m.getYear()..replaceAll("\\s","");
+		String mYear = Integer.toString(m.getYear()).replaceAll("\\s","");
 		
 		//input validation
-		if(mName.equals("") || (m.getYear()== -1)  ){
+		if(mName.equals("") || mYear.equals("") || mYear.equals("0")){
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
 		
-	    try {
-	    	Project p = dbLoader.getProject(projId);
-	    	//if(p != null){
-	    		m.setProject(p);
-	    		dbLoader.addMeetingsToProject(m);
-//	    	}else{
-//	    		throw new WebApplicationException(Response.Status.BAD_REQUEST);
-//	    	}
-		} catch (Exception e) {
-			throw new WebApplicationException(Response.Status.BAD_REQUEST);
-		}
+	    	Project p;
+			try {
+				p = dbLoader.getProject(projId);
+				System.out.println("p = " + p);
+				if(p != null){
+					m.setProject(p);
+					dbLoader.addMeetingsToProject(m);
+				}
+				else{
+					throw new WebApplicationException(Response.Status.BAD_REQUEST);
+				}
+			} catch (Exception e){
+				throw new WebApplicationException(Response.Status.BAD_REQUEST);
+	    	}
 
 	    return Response.created(URI.create(BASE_URI + "/projects/" + projId + "/meetings/" + m.getId())).build();
 
