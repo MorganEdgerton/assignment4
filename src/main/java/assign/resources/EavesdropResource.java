@@ -131,7 +131,6 @@ public class EavesdropResource {
 	    	Project p;
 			try {
 				p = dbLoader.getProject(projId);
-				System.out.println("p = " + p);
 				if(p != null){
 					m.setProject(p);
 					dbLoader.addMeetingsToProject(m);
@@ -189,21 +188,37 @@ public class EavesdropResource {
 	@Path("/{projectId}/meetings/{meetingId}")
 	@Consumes("application/xml")
 	   public Response updateMeeting(@PathParam("projectId") Long projId, @PathParam("meetingId") Long meetingId, Meeting update) throws Exception {
-		  System.out.println("tryna PUT a Meeting");
-		  //TODO: get meeting ID and give ID
+
+		  String uName = update.getName().replaceAll("\\s","");
+		  String uYear = Integer.toString(update.getYear()).replaceAll("\\s","");
+			
 		  //input validation
-		  if(update.getName().equals("") || (update.getYear() == -1) ){
-			  throw new WebApplicationException(Response.Status.BAD_REQUEST);
+		  if(uName.equals("") || uYear.equals("") || uYear.equals("0")){
+				throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		  }
 		  
-		  Project p = dbLoader.getProject(projId);
-		  Meeting current =  dbLoader.getMeeting(meetingId);
-		  if (p == null || current == null) throw new WebApplicationException(Response.Status.NO_CONTENT);
+		  Project p;
+		  Meeting current;
+		  try{ 
+			  p = dbLoader.getProject(projId);
+			  current =  dbLoader.getMeeting(meetingId);
+		  } catch (Exception e){
+			  System.out.println("died here");
+			  throw new WebApplicationException(Response.Status.NO_CONTENT);
+		  }
+		  
+		  if (p == null || current == null) {
+			  System.out.println("something was null");
+			  throw new WebApplicationException(Response.Status.NO_CONTENT);
+		  }
+		  Long currentProjectId = current.getProject().getId();
+		  if(!currentProjectId.equals(projId)){
+			  throw new WebApplicationException(Response.Status.NO_CONTENT);
+		  }
 
 		  update.setProject(p);
-		  
 	      dbLoader.updateMeeting(current, update);		  
-	  
+	      
 		  return Response.ok().build(); 
 	 }
     	
